@@ -630,7 +630,10 @@
     return css;
   }
   var idPool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  function nextUniqueId() {
+  function nextUniqueId(forceId) {
+    if(forceId && typeof forceId === 'string') {
+      return forceId
+    }
     var size = 12;
     var id = '';
 
@@ -792,8 +795,8 @@
       attributes: _objectSpread({}, trans.outer),
       children: [maskInnerGroup]
     };
-    var maskId = "mask-".concat(nextUniqueId());
-    var clipId = "clip-".concat(nextUniqueId());
+    var maskId = "mask-".concat(nextUniqueId(attributes['data-testid']));
+    var clipId = "clip-".concat(nextUniqueId(attributes['data-testid']));
     var maskTag = {
       tag: 'mask',
       attributes: _objectSpread({}, ALL_SPACE, {
@@ -957,7 +960,7 @@
     if (title) content.children.push({
       tag: 'title',
       attributes: {
-        id: content.attributes['aria-labelledby'] || "title-".concat(nextUniqueId())
+        id: content.attributes['aria-labelledby'] || "title-".concat(nextUniqueId(content.attributes['data-testid']))
       },
       children: [title]
     });
@@ -1591,9 +1594,12 @@
     }, {});
     var title = node.getAttribute('title');
 
+
     if (config.autoA11y) {
       if (title) {
-        extraAttributes['aria-labelledby'] = "".concat(config.replacementClass, "-title-").concat(nextUniqueId());
+        extraAttributes['aria-labelledby'] =
+          "".concat(config.replacementClass, "-title-")
+            .concat(nextUniqueId(extraAttributes['data-testid']));
       } else {
         extraAttributes['aria-hidden'] = 'true';
         extraAttributes['focusable'] = 'false';
@@ -2279,7 +2285,7 @@
 
       if (config.autoA11y) {
         if (title) {
-          attributes['aria-labelledby'] = "".concat(config.replacementClass, "-title-").concat(nextUniqueId());
+          attributes['aria-labelledby'] = "".concat(config.replacementClass, "-title-").concat(nextUniqueId(attributes['data-testid']));
         } else {
           attributes['aria-hidden'] = 'true';
           attributes['focusable'] = 'false';
